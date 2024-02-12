@@ -1,4 +1,5 @@
-const admin_m = require('../Model/admin_model')
+const { admin_model, company_model } = require('../Model/admin_schema');
+const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
@@ -6,7 +7,7 @@ require('dotenv').config();
 
 
 const createAdmin = (req, res) => {
-    const admin = new admin_m({
+    const admin = new admin_model({
         username: req.body.username,
         password: req.body.password,
         isDeleted: req.body.isDeleted
@@ -22,7 +23,7 @@ const createAdmin = (req, res) => {
 
 const admin_login = (req, res) => {
     let ui_pass = req.body.password;
-    admin_m.findOne({ username: req.body.username }).then((data) => {
+    admin_model.findOne({ username: req.body.username }).then((data) => {
         if (ui_pass !== data.password) {
             res.send({
                 isSuccess: false,
@@ -33,7 +34,7 @@ const admin_login = (req, res) => {
             const uobj = {
                 admin_jwt: token
             }
-            admin_m.updateOne({ username: req.body.username }, uobj).then((u_data) => {
+            admin_model.updateOne({ username: req.body.username }, uobj).then((u_data) => {
                 console.log(u_data);
             }).catch((err) => {
                 console.log(err)
@@ -50,5 +51,117 @@ const admin_login = (req, res) => {
 }
 
 
+// Adding companies ___________________________
 
-module.exports = { createAdmin, admin_login }
+const addCompany = (req, res) => {
+
+    const company = new company_model({
+        company_name: req.body.name,
+        company_password: bcrypt.hashSync(req.body.password, 10),
+        company_email: req.body.email,
+        company_contact_number: req.body.contact,
+        company_address: req.body.address,
+        company_logo: req.body.logo,
+        company_isDeleted: req.body.isDeleted
+    })
+    
+    company.save().then((data) => {
+        res.send({
+            isSuccess: true,
+            message: "Company is added",
+            datas: data
+        })
+    }).catch((err) => {
+        console.log(err);
+        res.send({
+            isSuccess: false,
+            message: "Something went wrong",
+            error: err
+        })
+    })
+}
+
+// updating companies ___________________
+
+const updateCompany = (req, res) => {
+
+    let obj = {}
+
+    if (req.body.name) {
+        obj.company_name = req.body.name
+    }
+    if (req.body.email) {
+        obj.company_email = req.body.email
+    }
+    if (req.body.password) {
+        obj.company_password = bcrypt.hashSync(req.body.password, 10)
+    }
+    if (req.body.logo) {
+        obj.company_logo = req.body.logo
+    }
+    if (req.body.address) {
+        obj.company_address = req.body.address
+    }
+    if (req.body.contact) {
+        obj.company_contact_number = req.body.contact
+    }
+    if (req.body.isDeleted) {
+        obj.company_isDeleted = req.body.isDeleted
+    }
+
+
+    company_model.updateOne({ company_name: req.query.name }, obj).then((data) => {
+        res.send({
+            isSuccess: true,
+            message: "company has been updated",
+        })
+    }).catch((err) => {
+        res.send({
+            isSuccess: false,
+            message: "Something went wrong",
+            error: err
+        })
+    })
+
+}
+
+
+// Deleting companies ___________________
+
+const deleteCompany = (req, res) => {
+    company_model.deleteOne({ company_name: req.query.name }).then((data) => {
+        res.send({
+            isSuccess: true,
+            message: "Company has been deleted successfully",
+        })
+    }).catch((err) => {
+        res.send({
+            isSuccess: false,
+            message: "Something went wrong while deletion",
+        })
+    })
+}
+
+// Find all companies __________________
+
+const getAllcompanies = (req, res) => {
+    const names = req.query.names;
+    company_model.find({ company_name: new RegExp(names) })
+        .then((data) => {
+            res.send({
+                isSuccess: true,
+                message: "List of companies ",
+                response: data
+            })
+        })
+        .catch((err) => {
+            res.send({
+                isSuccess: false,
+                message: "Companies not found",
+                error: err
+            })
+        })
+}
+
+
+module.exports = { createAdmin, admin_login, addCompany, deleteCompany, getAllcompanies, updateCompany }

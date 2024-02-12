@@ -1,6 +1,24 @@
 const mongoose= require('mongoose')
 
-let company_model = mongoose.Schema({
+let admin_registration = mongoose.Schema({
+    username : {
+        type : String,
+        required : true
+    },
+    password : {
+        type : String,
+        required : true
+    },
+    isDeleted : {
+        type : Boolean,
+        required : true
+    },
+    admin_jwt : {
+        type : String
+    }
+})
+
+let company_registration = mongoose.Schema({
     company_name : {
         type : String,
         required : true
@@ -28,7 +46,13 @@ let company_model = mongoose.Schema({
     company_isDeleted : {
         type : Boolean,
         required : true
+    },
+    company_jwt : {
+        type : String
     }
 })
 
-module.exports = mongoose.model('company',company_model)
+const admin_model = mongoose.model('admin',admin_registration)
+const company_model = mongoose.model('company',company_registration)
+
+module.exports = {admin_model,company_model}
