@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors')
 const app = express();
+
 app.use(cors({
      origin: "*",
      credentials: true
@@ -13,6 +14,7 @@ require('./dbconfig')
 
 const adminRoutes = require('./Routes/admin_routes');
 const companyRoutes = require('./Routes/company_routes')
+
 app.use('/admin', adminRoutes)
 app.use('/company', companyRoutes)
 

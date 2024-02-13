@@ -1,167 +1,188 @@
-const { admin_model, company_model } = require('../Model/admin_schema');
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const { admin_model, company_model } = require("../Model/admin_schema");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 //Creating new ADMIN
 
-
 const createAdmin = (req, res) => {
-    const admin = new admin_model({
-        username: req.body.username,
-        password: req.body.password,
-        isDeleted: req.body.isDeleted
+  const admin = new admin_model({
+    username: req.body.username,
+    password: req.body.password,
+    isDeleted: req.body.isDeleted,
+  });
+  admin
+    .save()
+    .then((data) => {
+      res.send(data);
     })
-    admin.save().then((data) => {
-        res.send(data)
-    }).catch((err) => {
-        res.send(err)
-    })
-}
+    .catch((err) => {
+      res.send(err);
+    });
+};
 
 // Admin login _______________
 
 const admin_login = (req, res) => {
-    let ui_pass = req.body.password;
-    admin_model.findOne({ username: req.body.username }).then((data) => {
-        if (ui_pass !== data.password) {
-            res.send({
-                isSuccess: false,
-                message: "wrong password"
-            })
-        } else {
-            const token = jwt.sign({ admin: data.username, role: 'admin' }, process.env.KEY)
-            const uobj = {
-                admin_jwt: token
-            }
-            admin_model.updateOne({ username: req.body.username }, uobj).then((u_data) => {
-                console.log(u_data);
-            }).catch((err) => {
-                console.log(err)
-            })
-            res.send({
-                isSuccess: true,
-                message: "You are logged in",
-                rData: data
-            })
-        }
-    }).catch((err) => {
-        res.send({ error: err, message: "user not found" })
+  let ui_pass = req.body.password;
+  admin_model
+    .findOne({ username: req.body.username })
+    .then((data) => {
+      if (ui_pass !== data.password) {
+        res.send({
+          isSuccess: false,
+          message: "wrong password",
+        });
+      } else {
+        const token = jwt.sign(
+          { admin: data.username, role: "admin" },
+          process.env.KEY
+        );
+        const uobj = {
+          admin_jwt: token,
+        };
+        admin_model
+          .updateOne({ username: req.body.username }, uobj)
+          .then((u_data) => {
+            console.log(u_data);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        res.send({
+          isSuccess: true,
+          message: "You are logged in",
+          rData: data,
+        });
+      }
     })
-}
-
+    .catch((err) => {
+      res.send({ error: err, message: "user not found" });
+    });
+};
 
 // Adding companies ___________________________
 
 const addCompany = (req, res) => {
+  const company = new company_model({
+    company_name: req.body.name,
+    company_password: bcrypt.hashSync(req.body.password, 10),
+    company_email: req.body.email,
+    company_contact_number: req.body.contact,
+    company_address: req.body.address,
+    company_logo: req.body.logo,
+    company_isDeleted: req.body.isDeleted,
+  });
 
-    const company = new company_model({
-        company_name: req.body.name,
-        company_password: bcrypt.hashSync(req.body.password, 10),
-        company_email: req.body.email,
-        company_contact_number: req.body.contact,
-        company_address: req.body.address,
-        company_logo: req.body.logo,
-        company_isDeleted: req.body.isDeleted
+  company
+    .save()
+    .then((data) => {
+      res.send({
+        isSuccess: true,
+        message: "Company is added",
+        datas: data,
+      });
     })
-    
-    company.save().then((data) => {
-        res.send({
-            isSuccess: true,
-            message: "Company is added",
-            datas: data
-        })
-    }).catch((err) => {
-        console.log(err);
-        res.send({
-            isSuccess: false,
-            message: "Something went wrong",
-            error: err
-        })
-    })
-}
+    .catch((err) => {
+      console.log(err);
+      res.send({
+        isSuccess: false,
+        message: "Something went wrong",
+        error: err,
+      });
+    });
+};
 
 // updating companies ___________________
 
 const updateCompany = (req, res) => {
+  let obj = {};
 
-    let obj = {}
+  if (req.body.name) {
+    obj.company_name = req.body.name;
+  }
+  if (req.body.email) {
+    obj.company_email = req.body.email;
+  }
+  if (req.body.password) {
+    obj.company_password = bcrypt.hashSync(req.body.password, 10);
+  }
+  if (req.body.logo) {
+    obj.company_logo = req.body.logo;
+  }
+  if (req.body.address) {
+    obj.company_address = req.body.address;
+  }
+  if (req.body.contact) {
+    obj.company_contact_number = req.body.contact;
+  }
+  if (req.body.isDeleted) {
+    obj.company_isDeleted = req.body.isDeleted;
+  }
 
-    if (req.body.name) {
-        obj.company_name = req.body.name
-    }
-    if (req.body.email) {
-        obj.company_email = req.body.email
-    }
-    if (req.body.password) {
-        obj.company_password = bcrypt.hashSync(req.body.password, 10)
-    }
-    if (req.body.logo) {
-        obj.company_logo = req.body.logo
-    }
-    if (req.body.address) {
-        obj.company_address = req.body.address
-    }
-    if (req.body.contact) {
-        obj.company_contact_number = req.body.contact
-    }
-    if (req.body.isDeleted) {
-        obj.company_isDeleted = req.body.isDeleted
-    }
-
-
-    company_model.updateOne({ company_name: req.query.name }, obj).then((data) => {
-        res.send({
-            isSuccess: true,
-            message: "company has been updated",
-        })
-    }).catch((err) => {
-        res.send({
-            isSuccess: false,
-            message: "Something went wrong",
-            error: err
-        })
+  company_model
+    .updateOne({ company_name: req.query.name }, obj)
+    .then((data) => {
+      res.send({
+        isSuccess: true,
+        message: "company has been updated",
+      });
     })
-
-}
-
+    .catch((err) => {
+      res.send({
+        isSuccess: false,
+        message: "Something went wrong",
+        error: err,
+      });
+    });
+};
 
 // Deleting companies ___________________
 
 const deleteCompany = (req, res) => {
-    company_model.deleteOne({ company_name: req.query.name }).then((data) => {
-        res.send({
-            isSuccess: true,
-            message: "Company has been deleted successfully",
-        })
-    }).catch((err) => {
-        res.send({
-            isSuccess: false,
-            message: "Something went wrong while deletion",
-        })
+  company_model
+    .deleteOne({ company_name: req.query.name })
+    .then((data) => {
+      res.send({
+        isSuccess: true,
+        message: "Company has been deleted successfully",
+      });
     })
-}
+    .catch((err) => {
+      res.send({
+        isSuccess: false,
+        message: "Something went wrong while deletion",
+      });
+    });
+};
 
 // Find all companies __________________
 
 const getAllcompanies = (req, res) => {
-    const names = req.query.names;
-    company_model.find({ company_name: new RegExp(names) })
-        .then((data) => {
-            res.send({
-                isSuccess: true,
-                message: "List of companies ",
-                response: data
-            })
-        })
-        .catch((err) => {
-            res.send({
-                isSuccess: false,
-                message: "Companies not found",
-                error: err
-            })
-        })
-}
+  const names = req.query.names;
+  company_model
+    .find({ company_name: new RegExp(names) })
+    .then((data) => {
+      res.send({
+        isSuccess: true,
+        message: "List of companies ",
+        response: data,
+      });
+    })
+    .catch((err) => {
+      res.send({
+        isSuccess: false,
+        message: "Companies not found",
+        error: err,
+      });
+    });
+};
 
-
-module.exports = { createAdmin, admin_login, addCompany, deleteCompany, getAllcompanies, updateCompany }
+module.exports = {
+  createAdmin,
+  admin_login,
+  addCompany,
+  deleteCompany,
+  getAllcompanies,
+  updateCompany,
+};

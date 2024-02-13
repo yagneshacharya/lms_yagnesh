@@ -1,26 +1,32 @@
 const { company_model } = require("../Model/admin_schema");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt")
 
-// Company login _______________
+
+
+//@ Company login _______________
 
 const company_login = (req, res) => {
-  let ui_pass = req.body.password;
+  let companyName = req.body.company_name;
   company_model
-    .findOne({ company_name: req.body.company_name })
+    .findOne({ company_name: companyName })
     .then((data) => {
-      console.log(data.company_name, company_name);
-      if (ui_pass !== data.company_password) {
+     let verifier = bcrypt.compareSync(req.body.password,data.company_password)
+      if (!verifier) {
         res.send({
           isSuccess: false,
           message: "wrong password",
         });
-      } else {
+      } else if(verifier){
         const token = jwt.sign(
           { company: data.company_name, role: "company" },
           process.env.KEY
         );
+
         const uobj = {
           company_jwt: token,
         };
+
         company_model
           .updateOne({ company_name: req.body.company_name }, uobj)
           .then((c_data) => {
@@ -28,17 +34,22 @@ const company_login = (req, res) => {
           })
           .catch((err) => {
             console.log(err);
-          });
+          });   
+
         res.send({
-          isSuccess: true,
-          message: "Dear company you are logged in",
-          rData: data,
+          message: "sucessed loggin",
+          rdata: data,
         });
       }
     })
     .catch((err) => {
-      res.send({ error: err, message: "company not found" });
+      console.log(err);
+      res.send({
+        message: "company not found",
+        error: err,
+      });
     });
+
 };
 
 module.exports = { company_login };
