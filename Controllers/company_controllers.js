@@ -1,8 +1,7 @@
 const { company_model } = require("../Model/admin_schema");
+const { candidateSchema } = require("../Model/candidate_schema");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt")
-
-
+const bcrypt = require("bcrypt");
 
 //@ Company login _______________
 
@@ -11,34 +10,26 @@ const company_login = (req, res) => {
   company_model
     .findOne({ company_name: companyName })
     .then((data) => {
-     let verifier = bcrypt.compareSync(req.body.password,data.company_password)
-      if (!verifier) {
+
+      let verifier = bcrypt.compareSync(
+        req.body.password,
+        data.company_password
+      );
+
+      if (!verifier) { // checking password
         res.send({
           isSuccess: false,
           message: "wrong password",
         });
-      } else if(verifier){
+      } else if (verifier) { // generating token
         const token = jwt.sign(
           { company: data.company_name, role: "company" },
           process.env.KEY
         );
 
-        const uobj = {
-          company_jwt: token,
-        };
-
-        company_model
-          .updateOne({ company_name: req.body.company_name }, uobj)
-          .then((c_data) => {
-            console.log(c_data);
-          })
-          .catch((err) => {
-            console.log(err);
-          });   
-
-        res.send({
-          message: "sucessed loggin",
-          rdata: data,
+        res.send({ // sending token as a response 
+          message: "Sucessfull loggin",
+          company_token: token,
         });
       }
     })
@@ -49,7 +40,129 @@ const company_login = (req, res) => {
         error: err,
       });
     });
-
 };
 
-module.exports = { company_login };
+// Adding Candidates ___________________________
+
+const addCandidates = (req, res) => {
+  const candidate = new candidateSchema({
+    candidate_name: req.body.name,
+    candidate_password: bcrypt.hashSync(req.body.password, 10),
+    candidate_email: req.body.email,
+    candidate_contact_number: req.body.contact,
+    candidate_address: req.body.address,
+    candidate_profilePic: req.body.profilePic,
+    candidate_isDeleted: req.body.isDeleted,
+  });
+
+  candidate
+    .save()
+    .then((data) => {
+      res.send({
+        isSuccess: true,
+        message: "Candidate is added",
+        datas: data,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.send({
+        isSuccess: false,
+        message: "Something went wrong",
+        error: err,
+      });
+    });
+};
+
+// updating Candidates ___________________
+
+const updateCandidates = (req, res) => {
+  let obj = {};
+
+  if (req.body.name) {
+    obj.candidate_name = req.body.name;
+  }
+  if (req.body.email) {
+    obj.candidate_email = req.body.email;
+  }
+  if (req.body.password) {
+    obj.candidate_password = bcrypt.hashSync(req.body.password, 10);
+  }
+  if (req.body.profilePic) {
+    obj.candidate_profilePic = req.body.profilePic;
+  }
+  if (req.body.address) {
+    obj.candidate_address = req.body.address;
+  }
+  if (req.body.contact) {
+    obj.candidate_contact_number = req.body.contact;
+  }
+  if (req.body.isDeleted) {
+    obj.candidate_isDeleted = req.body.isDeleted;
+  }
+
+  candidateSchema
+    .updateOne({ candidate_name: req.query.name }, obj)
+    .then((data) => {
+      res.send({
+        isSuccess: true,
+        message: "candidate has been updated",
+      });
+    })
+    .catch((err) => {
+      res.send({
+        isSuccess: false,
+        message: "Something went wrong",
+        error: err,
+      });
+    });
+};
+
+// Deleting candidates ___________________
+
+const deleteCandidates = (req, res) => {
+  candidateSchema
+    .deleteOne({ candidate_name: req.query.name })
+    .then((data) => {
+      res.send({
+        isSuccess: true,
+        message: "Candidate has been deleted successfully",
+      });
+    })
+    .catch((err) => {
+      res.send({
+        isSuccess: false,
+        message: "Something went wrong while deletion",
+      });
+    });
+};
+
+// Find all candidates __________________
+
+const getAllCandidates = (req, res) => {
+  const names = req.query.names;
+  candidateSchema
+    .find({ candidate_name: new RegExp(names) })
+    .then((data) => {
+      res.send({
+        isSuccess: true,
+        message: "List of cancidates",
+        response: data,
+      });
+    })
+    .catch((err) => {
+      res.send({
+        isSuccess: false,
+        message: "Candidates not found",
+        error: err,
+      });
+    });
+};
+
+module.exports = {
+  company_login,
+  addCandidates,
+  deleteCandidates,
+  getAllCandidates,
+  updateCandidates,
+};

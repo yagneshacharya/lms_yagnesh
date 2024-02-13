@@ -38,21 +38,11 @@ const admin_login = (req, res) => {
           { admin: data.username, role: "admin" },
           process.env.KEY
         );
-        const uobj = {
-          admin_jwt: token,
-        };
-        admin_model
-          .updateOne({ username: req.body.username }, uobj)
-          .then((u_data) => {
-            console.log(u_data);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+       
         res.send({
           isSuccess: true,
           message: "You are logged in",
-          rData: data,
+          admin_token: token,
         });
       }
     })

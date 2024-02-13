@@ -12,9 +12,6 @@ let admin_registration = mongoose.Schema({
     isDeleted : {
         type : Boolean,
         required : true
-    },
-    admin_jwt : {
-        type : String
     }
 })
 
@@ -46,9 +43,6 @@ let company_registration = mongoose.Schema({
     company_isDeleted : {
         type : Boolean,
         required : true
-    },
-    company_jwt : {
-        type : String
     }
 })
 
