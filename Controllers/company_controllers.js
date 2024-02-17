@@ -1,6 +1,6 @@
 const company_model = require("../Model/Company_model");
 const { candidateSchema } = require("../Model/Candidate_model");
-const { courseSchema } = require("../Model/Course_model");
+const  courseSchema  = require("../Model/Course_model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
@@ -164,25 +164,30 @@ const getAllCandidates = (req, res) => {
 };
 
 const addCourse = async (req, res) => {
-  let { course_name, course_title, course_duration } = req.body;
+  let { course_name, course_title, course_duration, company_id } = req.body;
 
-  await courseSchema
-    .create({
-      course_name,
-      course_title,
-      course_duration,
-    })
+  let course = new courseSchema({
+    course_name,
+    course_title,
+    course_duration,
+    company_id,
+  });
+
+  course.save().then((data)=>{
+     res.send(data)
+  }).catch((err)=>{
+     res.send(err)
+  })
+};
+
+const getAllcourses = (req, res) => {
+  courseSchema
+    .find({})
+    .populate("company_id")
     .then((data) => {
-      res
-        .send({
-          message: "course has been added",
-        })
-        .catch((err) => {
-          res.send({
-            error: err,
-          });
-        });
-    });
+      res.send(data);
+    })
+    .catch((err) => res.send(err));
 };
 
 module.exports = {
@@ -192,4 +197,5 @@ module.exports = {
   getAllCandidates,
   updateCandidates,
   addCourse,
+  getAllcourses,
 };

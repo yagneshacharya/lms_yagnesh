@@ -9,7 +9,8 @@ const {
   deleteCandidates,
   getAllCandidates,
   updateCandidates,
-  addCourse
+  addCourse,
+  getAllcourses
 } = require("../Controllers/company_controllers");
 
 let company_middleWare = async (req, res, next) => {
@@ -44,5 +45,6 @@ router.delete("/deleteCandidates", company_middleWare,deleteCandidates);
 router.get("/getAllCandidates", company_middleWare,getAllCandidates);
 router.put("/updateCandidates", company_middleWare,updateCandidates);
 router.put("/addCourse", company_middleWare,addCourse);
+router.get("/getAllcourses", company_middleWare,getAllcourses);
 
 module.exports = router;
