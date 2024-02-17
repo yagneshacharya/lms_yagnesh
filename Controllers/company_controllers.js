@@ -1,5 +1,5 @@
-const { company_model } = require("../Model/admin_schema");
-const { candidateSchema } = require("../Model/candidate_schema");
+const { company_model } = require("../Model/admin_model");
+const { candidateSchema } = require("../Model/company_model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
@@ -10,24 +10,26 @@ const company_login = (req, res) => {
   company_model
     .findOne({ company_name: companyName })
     .then((data) => {
-
       let verifier = bcrypt.compareSync(
         req.body.password,
         data.company_password
       );
 
-      if (!verifier) { // checking password
+      if (!verifier) {
+        // checking password
         res.send({
           isSuccess: false,
           message: "wrong password",
         });
-      } else if (verifier) { // generating token
+      } else if (verifier) {
+        // generating token
         const token = jwt.sign(
           { company: data.company_name, role: "company" },
           process.env.KEY
         );
 
-        res.send({ // sending token as a response 
+        res.send({
+          // sending token as a response
           message: "Sucessfull loggin",
           company_token: token,
         });
@@ -159,10 +161,48 @@ const getAllCandidates = (req, res) => {
     });
 };
 
+const addCourse = async (req, res) => {
+  let { course_name, course_title, course_duration } = req.body;
+
+  try {
+    await company_model
+      .findOne({ company_name: req.body.companyName })
+      .then(async (data) => {
+        let updated_obj = {
+          course_name,
+          course_title,
+          course_duration,
+        };
+
+        await company_model
+          .updateOne({ company_name: data.company_name }, updated_obj)
+          .then(() =>
+            res.send({
+              data: "courses has been added",
+            })
+          )
+          .catch((err) => {
+            res.send({
+              error: "something went wrong while adding courses",
+            });
+          });
+      })
+      .catch((err) =>
+        res.send({
+          error: "company not found in db",
+          Error: err,
+        })
+      );
+  } catch (error) {
+    res.send(error);
+  }
+};
+
 module.exports = {
   company_login,
   addCandidates,
   deleteCandidates,
   getAllCandidates,
   updateCandidates,
+  addCourse,
 };

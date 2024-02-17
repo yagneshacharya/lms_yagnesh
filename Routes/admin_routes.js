@@ -9,7 +9,7 @@ const {
   updateCompany,
 } = require("../Controllers/admin_controllers");
 require("dotenv").config();
-const { admin_model } = require("../Model/admin_schema");
+
 const jwt = require("jsonwebtoken");
 
 const jwt_middleware = async (req, res, next) => {

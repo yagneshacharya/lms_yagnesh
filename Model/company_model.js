@@ -27,10 +27,11 @@ let candidate_registration = mongoose.Schema({
     },
     candidate_isDeleted : {
         type : Boolean,
-        required : true
+        default : false
     }
 })
 
 const candidateSchema = mongoose.model('candidateDB',candidate_registration);
+
 
 module.exports = {candidateSchema}

@@ -1,4 +1,4 @@
-const { admin_model, company_model } = require("../Model/admin_schema");
+const { admin_model, company_model } = require("../Model/admin_model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -38,7 +38,7 @@ const admin_login = (req, res) => {
           { admin: data.username, role: "admin" },
           process.env.KEY
         );
-       
+
         res.send({
           isSuccess: true,
           message: "You are logged in",
