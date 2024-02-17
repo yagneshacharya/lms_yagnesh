@@ -1,5 +1,6 @@
-const { company_model } = require("../Model/admin_model");
-const { candidateSchema } = require("../Model/company_model");
+const company_model = require("../Model/Company_model");
+const { candidateSchema } = require("../Model/Candidate_model");
+const { courseSchema } = require("../Model/Course_model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
@@ -7,6 +8,7 @@ const bcrypt = require("bcrypt");
 
 const company_login = (req, res) => {
   let companyName = req.body.company_name;
+
   company_model
     .findOne({ company_name: companyName })
     .then((data) => {
@@ -36,7 +38,7 @@ const company_login = (req, res) => {
       }
     })
     .catch((err) => {
-      console.log(err);
+      console.log("here is your err", err);
       res.send({
         message: "company not found",
         error: err,
@@ -164,38 +166,23 @@ const getAllCandidates = (req, res) => {
 const addCourse = async (req, res) => {
   let { course_name, course_title, course_duration } = req.body;
 
-  try {
-    await company_model
-      .findOne({ company_name: req.body.companyName })
-      .then(async (data) => {
-        let updated_obj = {
-          course_name,
-          course_title,
-          course_duration,
-        };
-
-        await company_model
-          .updateOne({ company_name: data.company_name }, updated_obj)
-          .then(() =>
-            res.send({
-              data: "courses has been added",
-            })
-          )
-          .catch((err) => {
-            res.send({
-              error: "something went wrong while adding courses",
-            });
-          });
-      })
-      .catch((err) =>
-        res.send({
-          error: "company not found in db",
-          Error: err,
+  await courseSchema
+    .create({
+      course_name,
+      course_title,
+      course_duration,
+    })
+    .then((data) => {
+      res
+        .send({
+          message: "course has been added",
         })
-      );
-  } catch (error) {
-    res.send(error);
-  }
+        .catch((err) => {
+          res.send({
+            error: err,
+          });
+        });
+    });
 };
 
 module.exports = {

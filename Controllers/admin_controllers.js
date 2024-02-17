@@ -1,15 +1,15 @@
-const { admin_model, company_model } = require("../Model/admin_model");
+const company_model = require('../Model/Company_model');
+const admin_model = require("../Model/admin_model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 //Creating new ADMIN
-
+ 
 const createAdmin = (req, res) => {
   const admin = new admin_model({
     username: req.body.username,
     password: req.body.password,
-    isDeleted: req.body.isDeleted,
   });
   admin
     .save()

@@ -1,37 +1,39 @@
 const mongoose= require('mongoose');
 
-let candidate_registration = mongoose.Schema({
-    candidate_name : {
-        type : String,
-        required : true
+let company_registration = mongoose.Schema({
+    company_name: {
+      type: String,
+      required: true,
     },
-    candidate_password : {
-        type : String,
-        required : true
+    company_password: {
+      type: String,
+      required: true,
     },
-    candidate_email : {
-        type : String,
-        required : true
+    company_email: {
+      type: String,
+      required: true,
     },
-    candidate_profilePic : {
-        type : String,
-        required : true
+    company_logo: {
+      type: String,
+      required: true,
     },
-    candidate_contact_number : {
-        type : Number,
-        required : true
+    company_contact_number: {
+      type: Number,
+      required: true,
     },
-    candidate_address : {
-        type : String,
-        required : true
+    company_address: {
+      type: String,
+      required: true,
     },
-    candidate_isDeleted : {
-        type : Boolean,
-        default : false
+    company_isDeleted: {
+      type: Boolean,
+      required: true,
     }
-})
-
-const candidateSchema = mongoose.model('candidateDB',candidate_registration);
+  });
 
 
-module.exports = {candidateSchema}
+ 
+
+
+module.exports = mongoose.model('company_db',company_registration)
+
