@@ -11,8 +11,8 @@ const {
   updateCandidates,
 } = require("../Controllers/company_controllers");
 
-router.use(async (req, res, next) => {
-  let token = req.query.admin_token;
+let company_middleWare = async (req, res, next) => {
+  let token = req.query.company_token;
 
   let auth = jwt.verify(token, process.env.KEY);
 
@@ -35,12 +35,12 @@ router.use(async (req, res, next) => {
       error: err,
     });
   }
-});
+};
 
-router.get("/company_login", company_login);
-router.post("/addCandidates", addCandidates);
-router.delete("/deleteCandidates", deleteCandidates);
-router.get("/getAllCandidates", getAllCandidates);
-router.put("/updateCandidates", updateCandidates);
+router.get("/company_login",company_login);
+router.post("/addCandidates", company_middleWare,addCandidates);
+router.delete("/deleteCandidates", company_middleWare,deleteCandidates);
+router.get("/getAllCandidates", company_middleWare,getAllCandidates);
+router.put("/updateCandidates", company_middleWare,updateCandidates);
 
 module.exports = router;
