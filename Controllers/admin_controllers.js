@@ -1,4 +1,4 @@
-const company_model = require('../Model/Company_model');
+const company_model = require('../Model/company_model');
 const admin_model = require("../Model/admin_model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -24,9 +24,9 @@ const createAdmin = (req, res) => {
 // Admin login _______________
 
 const admin_login = (req, res) => {
-  let ui_pass = req.body.password;
+  let ui_pass = req.body.admin_password;
   admin_model
-    .findOne({ username: req.body.username })
+    .findOne({ username: req.body.admin_username })
     .then((data) => {
       if (ui_pass !== data.password) {
         res.send({
@@ -55,12 +55,12 @@ const admin_login = (req, res) => {
 
 const addCompany = (req, res) => {
   const company = new company_model({
-    company_name: req.body.name,
-    company_password: bcrypt.hashSync(req.body.password, 10),
-    company_email: req.body.email,
-    company_contact_number: req.body.contact,
-    company_address: req.body.address,
-    company_logo: req.body.logo,
+    company_name: req.body.company_name,
+    company_password: bcrypt.hashSync(req.body.company_password, 10),
+    company_email: req.body.company_email,
+    company_contact_number: req.body.company_contact_number,
+    company_address: req.body.company_address,
+    company_logo: req.body.company_logo,
     company_isDeleted: req.body.isDeleted,
   });
 

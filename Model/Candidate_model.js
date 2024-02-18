@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb')
 const mongoose = require('mongoose')
 
 let candidate_registration = mongoose.Schema({
@@ -28,6 +29,10 @@ let candidate_registration = mongoose.Schema({
     candidate_isDeleted : {
         type : Boolean,
         default : false
+    },
+    company_id : {
+        type : ObjectId,
+        ref  : 'company_db'
     }
 })
 

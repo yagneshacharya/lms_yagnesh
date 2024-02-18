@@ -16,8 +16,9 @@ let course_registration = mongoose.Schema({
     default: false,
   },
   company_id : {
-     type : ObjectId,
-     ref : 'company_db'
+     type : mongoose.Schema.Types.ObjectId,
+     ref : 'company_db',
+     required : true
   }
 });
 

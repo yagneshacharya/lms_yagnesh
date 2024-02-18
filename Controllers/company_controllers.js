@@ -1,16 +1,16 @@
-const company_model = require("../Model/Company_model");
+const company_model = require("../Model/company_model");
 const { candidateSchema } = require("../Model/Candidate_model");
-const  courseSchema  = require("../Model/Course_model");
+const courseSchema = require("../Model/Course_model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 //@ Company login _______________
 
 const company_login = (req, res) => {
-  let companyName = req.body.company_name;
+  let companyName = req.body.company_email;
 
   company_model
-    .findOne({ company_name: companyName })
+    .findOne({ company_email: companyName })
     .then((data) => {
       let verifier = bcrypt.compareSync(
         req.body.password,
@@ -26,7 +26,7 @@ const company_login = (req, res) => {
       } else if (verifier) {
         // generating token
         const token = jwt.sign(
-          { company: data.company_name, role: "company" },
+          { company: data.company_email, role: "company" },
           process.env.KEY
         );
 
@@ -50,13 +50,14 @@ const company_login = (req, res) => {
 
 const addCandidates = (req, res) => {
   const candidate = new candidateSchema({
-    candidate_name: req.body.name,
-    candidate_password: bcrypt.hashSync(req.body.password, 10),
-    candidate_email: req.body.email,
-    candidate_contact_number: req.body.contact,
-    candidate_address: req.body.address,
-    candidate_profilePic: req.body.profilePic,
+    candidate_name: req.body.candidate_name,
+    candidate_password: bcrypt.hashSync(req.body.candidate_password, 10),
+    candidate_email: req.body.candidate_email,
+    candidate_contact_number: req.body.candidate_contact_number,
+    candidate_address: req.body.candidate_address,
+    candidate_profilePic: req.body.candidate_profilePic,
     candidate_isDeleted: req.body.isDeleted,
+    company_id: req.body.company_id,
   });
 
   candidate
@@ -144,9 +145,35 @@ const deleteCandidates = (req, res) => {
 // Find all candidates __________________
 
 const getAllCandidates = (req, res) => {
-  const names = req.query.names;
+  const company_id = req.query.company_id;
   candidateSchema
-    .find({ candidate_name: new RegExp(names) })
+    .find({ company_id: company_id })
+    .populate("company_id")
+    .then((data) => {
+      res.send({
+        isSuccess: true,
+        message: "List of cancidates",
+        response: data,
+      });
+    })
+    .catch((err) => {
+      res.send({
+        isSuccess: false,
+        message: "Candidates not found",
+        error: err,
+      });
+    });
+};
+
+// find candidate by id
+
+const getCandidateById = (req, res) => {
+  const company_id = req.query.company_id;
+  const name = req.body.candidate_name;
+  candidateSchema
+    .find({
+      $and: [{ company_id: company_id }, { candidate_name: new RegExp(name) }],
+    })
     .then((data) => {
       res.send({
         isSuccess: true,
@@ -173,17 +200,19 @@ const addCourse = async (req, res) => {
     company_id,
   });
 
-  course.save().then((data)=>{
-     res.send(data)
-  }).catch((err)=>{
-     res.send(err)
-  })
+  course
+    .save()
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.send(err);
+    });
 };
 
 const getAllcourses = (req, res) => {
   courseSchema
-    .find({})
-    .populate("company_id")
+    .find({ company_id: req.body.company_id })
     .then((data) => {
       res.send(data);
     })
@@ -198,4 +227,5 @@ module.exports = {
   updateCandidates,
   addCourse,
   getAllcourses,
+  getCandidateById,
 };
