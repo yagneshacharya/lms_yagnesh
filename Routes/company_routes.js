@@ -9,44 +9,20 @@ const {
   deleteCandidates,
   getAllCandidates,
   updateCandidates,
-  addCourse,
-  getAllcourses,
-  getCandidateById
+  addSkill,
+  getAllSkills,
+  getCandidateById,
 } = require("../Controllers/company_controllers");
 
-let company_middleWare = async (req, res, next) => {
-  let token = req.query.company_token;
+const {company_middleWare} = require('../Middlewares/company_middlewares');
 
-  let auth = jwt.verify(token, process.env.KEY);
-
-  if (!auth)
-    res.send({
-      message: "invalid authorization",
-    });
-
-  try {
-    if (auth) {
-      if (auth.role == "company") {
-        next();
-      } else {
-        res.send("You are not authorized");
-      }
-    }
-  } catch (error) {
-    res.send({
-      message: "you are not authorized",
-      error: err,
-    });
-  }
-};
-
-router.get("/company_login",company_login);
-router.post("/addCandidates", company_middleWare,addCandidates);
-router.delete("/deleteCandidates", company_middleWare,deleteCandidates);
-router.get("/getAllCandidates", company_middleWare,getAllCandidates);
-router.put("/updateCandidates", company_middleWare,updateCandidates);
-router.put("/addCourse", company_middleWare,addCourse);
-router.get("/getAllcourses", company_middleWare,getAllcourses);
-router.get("/getCandidateById", company_middleWare,getCandidateById);
+router.post("/company_login", company_login);
+router.post("/addCandidates", addCandidates);
+router.delete("/deleteCandidates", deleteCandidates);
+router.get("/getAllCandidates", getAllCandidates);
+router.put("/updateCandidates", updateCandidates);
+router.put("/addSkill", addSkill);
+router.get("/getAllSkills", getAllSkills);
+router.get("/getCandidateById", getCandidateById);
 
 module.exports = router;

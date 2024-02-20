@@ -1,4 +1,3 @@
-const { ObjectId } = require('mongodb')
 const mongoose = require('mongoose')
 
 let candidate_registration = mongoose.Schema({
@@ -31,7 +30,7 @@ let candidate_registration = mongoose.Schema({
         default : false
     },
     company_id : {
-        type : ObjectId,
+        type : mongoose.Schema.Types.ObjectId,
         ref  : 'company_db'
     }
 })

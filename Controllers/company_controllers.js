@@ -1,49 +1,56 @@
 const company_model = require("../Model/company_model");
-const { candidateSchema } = require("../Model/Candidate_model");
-const courseSchema = require("../Model/Course_model");
+const candidateSchema = require("../Model/Candidate_model");
+const SkillSchema = require("../Model/Skill_model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 //@ Company login _______________
 
 const company_login = (req, res) => {
-  let companyName = req.body.company_email;
+  try {
+    let company_email = req.body.company_email;
 
-  company_model
-    .findOne({ company_email: companyName })
-    .then((data) => {
-      let verifier = bcrypt.compareSync(
-        req.body.password,
-        data.company_password
-      );
-
-      if (!verifier) {
-        // checking password
-        res.send({
-          isSuccess: false,
-          message: "wrong password",
-        });
-      } else if (verifier) {
-        // generating token
-        const token = jwt.sign(
-          { company: data.company_email, role: "company" },
-          process.env.KEY
+    company_model
+      .findOne({ company_email })
+      .then((data) => {
+        let verifier = bcrypt.compareSync(
+          req.body.company_password,
+          data.company_password
         );
 
+        if (!verifier) {
+          // checking password
+          res.send({
+            isSuccess: false,
+            message: "wrong password",
+          });
+        } else if (verifier) {
+          // generating token
+          const token = jwt.sign(
+            { company: data.company_email, role: "company" },
+            process.env.KEY
+          );
+
+          res.send({
+            // sending token as a response
+            message: "Sucessfull loggin",
+            company_token: token,
+          });
+        }
+      })
+      .catch((err) => {
+        console.log("here is your err", err);
         res.send({
-          // sending token as a response
-          message: "Sucessfull loggin",
-          company_token: token,
+          message: "company not found",
+          error: err,
         });
-      }
-    })
-    .catch((err) => {
-      console.log("here is your err", err);
-      res.send({
-        message: "company not found",
-        error: err,
       });
+  } catch (error) {
+    res.send({
+      isSuccess: false,
+      message: error,
     });
+  }
 };
 
 // Adding Candidates ___________________________
@@ -56,7 +63,6 @@ const addCandidates = (req, res) => {
     candidate_contact_number: req.body.candidate_contact_number,
     candidate_address: req.body.candidate_address,
     candidate_profilePic: req.body.candidate_profilePic,
-    candidate_isDeleted: req.body.isDeleted,
     company_id: req.body.company_id,
   });
 
@@ -84,31 +90,31 @@ const addCandidates = (req, res) => {
 const updateCandidates = (req, res) => {
   let obj = {};
 
-  if (req.body.name) {
-    obj.candidate_name = req.body.name;
+  if (req.body.candidate_name) {
+    obj.candidate_name = req.body.candidate_name;
   }
-  if (req.body.email) {
-    obj.candidate_email = req.body.email;
+  if (req.body.candidate_email) {
+    obj.candidate_email = req.body.candidate_email;
   }
-  if (req.body.password) {
-    obj.candidate_password = bcrypt.hashSync(req.body.password, 10);
+  if (req.body.candidate_password) {
+    obj.candidate_password = bcrypt.hashSync(req.body.candidate_password, 10);
   }
-  if (req.body.profilePic) {
-    obj.candidate_profilePic = req.body.profilePic;
+  if (req.body.candidate_profilePic) {
+    obj.candidate_profilePic = req.body.candidate_profilePic;
   }
-  if (req.body.address) {
-    obj.candidate_address = req.body.address;
+  if (req.body.candidate_address) {
+    obj.candidate_address = req.body.candidate_address;
   }
-  if (req.body.contact) {
-    obj.candidate_contact_number = req.body.contact;
+  if (req.body.candidate_contact_number) {
+    obj.candidate_contact_number = req.body.candidate_contact_number;
   }
-  if (req.body.isDeleted) {
-    obj.candidate_isDeleted = req.body.isDeleted;
+  if (req.body.candidate_isDeleted) {
+    obj.candidate_isDeleted = req.body.candidate_isDeleted;
   }
 
   candidateSchema
-    .updateOne({ candidate_name: req.query.name }, obj)
-    .then((data) => {
+    .updateOne({ candidate_name: req.query.candidate_name }, obj)
+    .then(() => {
       res.send({
         isSuccess: true,
         message: "candidate has been updated",
@@ -127,7 +133,7 @@ const updateCandidates = (req, res) => {
 
 const deleteCandidates = (req, res) => {
   candidateSchema
-    .deleteOne({ candidate_name: req.query.name })
+    .deleteOne({ candidate_name: req.query.candidate_name })
     .then((data) => {
       res.send({
         isSuccess: true,
@@ -145,78 +151,127 @@ const deleteCandidates = (req, res) => {
 // Find all candidates __________________
 
 const getAllCandidates = (req, res) => {
-  const company_id = req.query.company_id;
-  candidateSchema
-    .find({ company_id: company_id })
-    .populate("company_id")
-    .then((data) => {
-      res.send({
-        isSuccess: true,
-        message: "List of cancidates",
-        response: data,
+  try {
+    const company_id = req.query.company_id;
+    candidateSchema
+      .find({ company_id: company_id })
+      .then((data) => {
+        res.send({
+          isSuccess: true,
+          message: "List of cancidates",
+          response: data,
+        });
+      })
+      .catch((err) => {
+        res.send({
+          isSuccess: false,
+          message: "Candidates not found",
+          error: err,
+        });
       });
-    })
-    .catch((err) => {
-      res.send({
-        isSuccess: false,
-        message: "Candidates not found",
-        error: err,
-      });
+  } catch (error) {
+    res.send({
+      isSuccess: false,
+      data: error,
     });
+  }
 };
 
 // find candidate by id
 
 const getCandidateById = (req, res) => {
-  const company_id = req.query.company_id;
-  const name = req.body.candidate_name;
-  candidateSchema
-    .find({
-      $and: [{ company_id: company_id }, { candidate_name: new RegExp(name) }],
-    })
-    .then((data) => {
-      res.send({
-        isSuccess: true,
-        message: "List of cancidates",
-        response: data,
+  try {
+    const company_id = req.query.company_id;
+    const name = req.query.candidate_name;
+    candidateSchema
+      .find({
+        $and: [
+          { company_id: company_id },
+          { candidate_name: new RegExp(name) },
+        ],
+      })
+      .then((data) => {
+        res.send({
+          isSuccess: true,
+          message: "List of cancidates",
+          response: data,
+        });
+      })
+      .catch((err) => {
+        res.send({
+          isSuccess: false,
+          message: "Candidates not found",
+          error: err,
+        });
       });
+  } catch (error) {
+    res.send({
+      isSuccess: false,
+      data: error,
+    });
+  }
+};
+
+const addSkill = async (req, res) => {
+  try {
+    let { Skill_name, Skill_title, Skill_duration, company_id } = req.body;
+
+    let Skill = new SkillSchema({
+      Skill_name,
+      Skill_title,
+      Skill_duration,
+      company_id,
+    });
+
+    Skill
+      .save()
+      .then((data) => {
+        res.send(data);
+      })
+      .catch((err) => {
+        res.send(err);
+      });
+  } catch (error) {
+    res.send({
+      isSuccess: false,
+      data: error,
+    });
+  }
+};
+
+const getAllSkills = (req, res) => {
+  try {
+    SkillSchema
+      .find({ company_id: req.body.company_id })
+      .then((data) => {
+        res.send(data);
+      })
+      .catch((err) => {
+        res.send({
+          isSuccess: false,
+          data: err,
+        });
+      });
+  } catch (error) {
+    res.send({
+      isSuccess: false,
+      data: error,
+    });
+  }
+};
+
+const company_forgot_password = async (req, res) => {
+  await company_model
+    .findOne({ company_id: req.body.company_id })
+    .then((data) => {
+          
     })
-    .catch((err) => {
+    .catch((error) => {
       res.send({
         isSuccess: false,
-        message: "Candidates not found",
-        error: err,
+        data: error,
       });
     });
-};
-
-const addCourse = async (req, res) => {
-  let { course_name, course_title, course_duration, company_id } = req.body;
-
-  let course = new courseSchema({
-    course_name,
-    course_title,
-    course_duration,
-    company_id,
-  });
-
-  course
-    .save()
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.send(err);
-    });
-};
-
-const getAllcourses = (req, res) => {
-  courseSchema
-    .find({ company_id: req.body.company_id })
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => res.send(err));
 };
 
 module.exports = {
@@ -225,7 +280,8 @@ module.exports = {
   deleteCandidates,
   getAllCandidates,
   updateCandidates,
-  addCourse,
-  getAllcourses,
+  addSkill,
+  getAllSkills,
   getCandidateById,
+  company_forgot_password,
 };

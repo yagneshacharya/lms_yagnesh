@@ -1,17 +1,17 @@
 const { ObjectId } = require("mongodb");
 const mongoose = require("mongoose");
 
-let course_registration = mongoose.Schema({
-  course_name: {
+let Skill_registration = mongoose.Schema({
+  Skill_name: {
     type: String,
   },
-  course_title: {
+  Skill_title: {
     type: String,
   },
-  course_duration: {
+  Skill_duration: {
     type: String,
   },
-  course_isDeleted: {
+  Skill_isDeleted: {
     type: Boolean,
     default: false,
   },
@@ -22,4 +22,4 @@ let course_registration = mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model("Course_Model", course_registration);
+module.exports = mongoose.model("Skill_Model", Skill_registration);

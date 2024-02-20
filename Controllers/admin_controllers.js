@@ -1,11 +1,11 @@
-const company_model = require('../Model/company_model');
+const company_model = require("../Model/company_model");
 const admin_model = require("../Model/admin_model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 //Creating new ADMIN
- 
+
 const createAdmin = (req, res) => {
   const admin = new admin_model({
     username: req.body.username,
@@ -88,84 +88,135 @@ const addCompany = (req, res) => {
 const updateCompany = (req, res) => {
   let obj = {};
 
-  if (req.body.name) {
+  if (req.body.company_name) {
     obj.company_name = req.body.name;
   }
-  if (req.body.email) {
+  if (req.body.company_email) {
     obj.company_email = req.body.email;
   }
-  if (req.body.password) {
+  if (req.body.company_password) {
     obj.company_password = bcrypt.hashSync(req.body.password, 10);
   }
-  if (req.body.logo) {
+  if (req.body.company_logo) {
     obj.company_logo = req.body.logo;
   }
-  if (req.body.address) {
+  if (req.body.company_address) {
     obj.company_address = req.body.address;
   }
-  if (req.body.contact) {
+  if (req.body.company_contact_number) {
     obj.company_contact_number = req.body.contact;
   }
   if (req.body.isDeleted) {
     obj.company_isDeleted = req.body.isDeleted;
   }
-
-  company_model
-    .updateOne({ company_name: req.query.name }, obj)
-    .then((data) => {
-      res.send({
-        isSuccess: true,
-        message: "company has been updated",
+  try {
+    company_model
+      .updateOne({ company_name: req.query.name }, obj)
+      .then((data) => {
+        res.send({
+          isSuccess: true,
+          message: "company has been updated",
+        });
+      })
+      .catch((err) => {
+        res.send({
+          isSuccess: false,
+          message: "Something went wrong",
+          error: err,
+        });
       });
-    })
-    .catch((err) => {
-      res.send({
-        isSuccess: false,
-        message: "Something went wrong",
-        error: err,
-      });
+  } catch (error) {
+    res.send({
+      isSuccess: false,
+      data: error,
     });
+  }
 };
 
 // Deleting companies ___________________
 
 const deleteCompany = (req, res) => {
-  company_model
-    .deleteOne({ company_name: req.query.name })
-    .then((data) => {
-      res.send({
-        isSuccess: true,
-        message: "Company has been deleted successfully",
+  try {
+    company_model
+      .deleteOne({ company_name: req.query.name })
+      .then((data) => {
+        res.send({
+          isSuccess: true,
+          message: "Company has been deleted successfully",
+        });
+      })
+      .catch((err) => {
+        res.send({
+          isSuccess: false,
+          message: "Something went wrong while deletion",
+        });
       });
-    })
-    .catch((err) => {
-      res.send({
-        isSuccess: false,
-        message: "Something went wrong while deletion",
-      });
+  } catch (error) {
+    res.send({
+      isSuccess: false,
+      data: error,
     });
+  }
 };
 
-// Find all companies __________________
+//@ Find all companies __________________
 
 const getAllcompanies = (req, res) => {
-  const names = req.query.names;
-  company_model
-    .find({ company_name: new RegExp(names) })
-    .then((data) => {
-      res.send({
-        isSuccess: true,
-        message: "List of companies ",
-        response: data,
+  try {
+    const names = req.query.names;
+    company_model
+      .find({ company_name: new RegExp(names) })
+      .then((data) => {
+        console.log(data);
+        res.send({
+          isSuccess: true,
+          message: "List of companies ",
+          response: data,
+        });
+      })
+      .catch((err) => {
+        res.send({
+          isSuccess: false,
+          message: "Companies not found",
+          error: err,
+        });
       });
-    })
-    .catch((err) => {
-      res.send({
-        isSuccess: false,
-        message: "Companies not found",
-        error: err,
-      });
+  } catch (error) {
+    res.send({
+      isSuccess: false,
+      data: error,
     });
+  }
+};
+//@ Find  companies by id __________________
+
+const getCompanyById = (req, res) => {
+  try {
+    const names = req.body.names;
+    company_model
+      .find({
+        $and: [{ company_name: new RegExp(names) }, { _id: req.body.id }],
+      })
+      .then((data) => {
+        res.send({
+          isSuccess: true,
+          message: "List of companies ",
+          response: data,
+        });
+      })
+      .catch((err) => {
+        res.send({
+          isSuccess: false,
+          message: "Companies not found",
+          error: err,
+        });
+      });
+  } catch (error) {
+    res.send({
+      isSuccess: false,
+      data: error,
+    });
+  }
 };
 
 module.exports = {
@@ -175,4 +226,5 @@ module.exports = {
   deleteCompany,
   getAllcompanies,
   updateCompany,
+  getCompanyById,
 };
