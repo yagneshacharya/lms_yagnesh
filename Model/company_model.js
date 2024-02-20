@@ -27,7 +27,7 @@ let company_registration = mongoose.Schema({
     },
     company_isDeleted: {
       type: Boolean,
-      required: true,
+      default : false
     }
   });
 

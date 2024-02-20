@@ -3,6 +3,8 @@ const candidateSchema = require("../Model/Candidate_model");
 const SkillSchema = require("../Model/Skill_model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { transporter, mailOptions, sendMail } = require("../Nodemailer");
+const {updateCompany} = require('../Controllers/admin_controllers');
 
 //@ Company login _______________
 
@@ -223,8 +225,7 @@ const addSkill = async (req, res) => {
       company_id,
     });
 
-    Skill
-      .save()
+    Skill.save()
       .then((data) => {
         res.send(data);
       })
@@ -241,8 +242,7 @@ const addSkill = async (req, res) => {
 
 const getAllSkills = (req, res) => {
   try {
-    SkillSchema
-      .find({ company_id: req.body.company_id })
+    SkillSchema.find({ company_id: req.body.company_id })
       .then((data) => {
         res.send(data);
       })
@@ -261,19 +261,57 @@ const getAllSkills = (req, res) => {
 };
 
 const company_forgot_password = async (req, res) => {
+  try {
+    const { company_email } = req.body;
+
+    await company_model
+      .findOne({ company_email })
+      .then(() => {
+        sendMail(transporter, mailOptions(company_email));
+        res.send({
+          isSuccess: true,
+          data: "mail has been sent by controller",
+        });
+      })
+      .catch((error) => {
+        res.send({
+          isSuccess: false,
+          data: error,
+        });
+      });
+  } catch (error) {
+    res.send({
+      isSuccess: false,
+      data: error,
+    });
+  }
+};
+
+const company_update_password = async (req, res) => {
+  const new_password = await req.body.company_new_password;
+  const id = await req.body.id;
+
+  let updated_obj = {
+    company_password: bcrypt.hashSync(new_password,10)
+  };
+
   await company_model
-    .findOne({ company_id: req.body.company_id })
-    .then((data) => {
-          
+    .updateOne({ company_id: id }, updated_obj)
+    .then(() => {
+      res.send({
+        isSuccess: true,
+        message: "password has been changed sucessfully",
+      });
     })
-    .catch((error) => {
+    .catch((err) => {
       res.send({
         isSuccess: false,
-        data: error,
+        message: "Something went wrong while password updation",
+        error: err,
       });
     });
 };
-
+// $2b$10$Dtofun9MWPZUa29MYrCmjO1iHta7TQgtUkpuvRs288Uczn14xD2ky
 module.exports = {
   company_login,
   addCandidates,
@@ -284,4 +322,6 @@ module.exports = {
   getAllSkills,
   getCandidateById,
   company_forgot_password,
+  company_update_password,
+  updateCompany
 };

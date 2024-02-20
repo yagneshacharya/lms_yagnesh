@@ -89,29 +89,29 @@ const updateCompany = (req, res) => {
   let obj = {};
 
   if (req.body.company_name) {
-    obj.company_name = req.body.name;
+    obj.company_name = req.body.company_name;
   }
   if (req.body.company_email) {
-    obj.company_email = req.body.email;
+    obj.company_email = req.body.company_email;
   }
   if (req.body.company_password) {
-    obj.company_password = bcrypt.hashSync(req.body.password, 10);
+    obj.company_password = bcrypt.hashSync(req.body.company_password, 10);
   }
   if (req.body.company_logo) {
-    obj.company_logo = req.body.logo;
+    obj.company_logo = req.body.company_logo;
   }
   if (req.body.company_address) {
-    obj.company_address = req.body.address;
+    obj.company_address = req.body.company_address;
   }
   if (req.body.company_contact_number) {
-    obj.company_contact_number = req.body.contact;
+    obj.company_contact_number = req.body.company_contact_number;
   }
   if (req.body.isDeleted) {
     obj.company_isDeleted = req.body.isDeleted;
   }
   try {
     company_model
-      .updateOne({ company_name: req.query.name }, obj)
+      .updateOne({ _id: req.query.id }, obj)
       .then((data) => {
         res.send({
           isSuccess: true,
@@ -228,3 +228,4 @@ module.exports = {
   updateCompany,
   getCompanyById,
 };
+
