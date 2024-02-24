@@ -159,7 +159,7 @@ const deleteCompany = (req, res) => {
   }
 };
 
-//@ Find all companies __________________
+//@ Find all companies by name__________________
 
 const getAllcompanies = (req, res) => {
   try {
@@ -188,6 +188,38 @@ const getAllcompanies = (req, res) => {
     });
   }
 };
+
+//@ Find all companies only
+
+const getAllCompaniesOnly = (req, res) => {
+  try {
+    company_model
+    .find({})
+      .then((data) => {
+        console.log(data);
+        res.send({
+          isSuccess: true,
+          message: "List of companies ",
+          response: data,
+        });
+      })
+      .catch((err) => {
+        res.send({
+          isSuccess: false,
+          message: "Companies not found",
+          error: err,
+        });
+      });
+  } catch (error) {
+    res.send({
+      isSuccess: false,
+      data: error,
+    });
+  }
+};
+
+
+
 //@ Find  companies by id __________________
 
 const getCompanyById = (req, res) => {
@@ -227,5 +259,6 @@ module.exports = {
   getAllcompanies,
   updateCompany,
   getCompanyById,
+  getAllCompaniesOnly
 };
 

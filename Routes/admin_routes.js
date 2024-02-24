@@ -7,7 +7,8 @@ const {
   deleteCompany,
   getAllcompanies,
   updateCompany,
-  getCompanyById
+  getCompanyById,
+  getAllCompaniesOnly
 } = require("../Controllers/admin_controllers");
 require("dotenv").config();
 
@@ -18,6 +19,7 @@ router.post("/admin_login", admin_login);
 router.post("/addCompany", addCompany);
 router.delete("/deleteCompany", deleteCompany);
 router.get("/getAllcompanies", getAllcompanies);
+router.get("/getAllCompaniesOnly", getAllCompaniesOnly);
 router.get("/getCompanyById", getCompanyById);
 router.put("/updateCompany", updateCompany);
 
