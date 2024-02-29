@@ -1,8 +1,8 @@
-const bcrypt = require('bcrypt');
+const {nanoid} = require('nanoid');
+// import { nanoid } from 'nanoid';
+const id = nanoid(4);
+
+console.log(id);
 
 
-let password = '1234'
-const e_pass = bcrypt.hashSync(password,10)
-const ans = bcrypt.compareSync('1234',e_pass)
-console.log(e_pass,ans);
 

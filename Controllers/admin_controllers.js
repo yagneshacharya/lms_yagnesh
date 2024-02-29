@@ -69,7 +69,7 @@ const addCompany = (req, res) => {
     .then((data) => {
       res.send({
         isSuccess: true,
-        message: "Company is added",
+        message: "Company is added recently",
         datas: data,
       });
     })
@@ -109,28 +109,23 @@ const updateCompany = (req, res) => {
   if (req.body.isDeleted) {
     obj.company_isDeleted = req.body.isDeleted;
   }
-  try {
-    company_model
-      .updateOne({ _id: req.query.id }, obj)
-      .then((data) => {
-        res.send({
-          isSuccess: true,
-          message: "company has been updated",
-        });
-      })
-      .catch((err) => {
-        res.send({
-          isSuccess: false,
-          message: "Something went wrong",
-          error: err,
-        });
+  console.log("backend message : ", obj);
+
+  company_model
+    .updateOne({ _id: req.body._id }, obj)
+    .then((data) => { 
+      res.send({
+        isSuccess: true,
+        message: "company has been updated",
       });
-  } catch (error) {
-    res.send({
-      isSuccess: false,
-      data: error,
+    })
+    .catch((err) => {
+      res.send({
+        isSuccess: false,
+        message: "Something went wrong while updating",
+        error: err,
+      });
     });
-  }
 };
 
 // Deleting companies ___________________
@@ -167,7 +162,6 @@ const getAllcompanies = (req, res) => {
     company_model
       .find({ company_name: new RegExp(names) })
       .then((data) => {
-        console.log(data);
         res.send({
           isSuccess: true,
           message: "List of companies ",
@@ -194,9 +188,8 @@ const getAllcompanies = (req, res) => {
 const getAllCompaniesOnly = (req, res) => {
   try {
     company_model
-    .find({})
+      .find({})
       .then((data) => {
-        console.log(data);
         res.send({
           isSuccess: true,
           message: "List of companies ",
@@ -217,8 +210,6 @@ const getAllCompaniesOnly = (req, res) => {
     });
   }
 };
-
-
 
 //@ Find  companies by id __________________
 
@@ -259,6 +250,5 @@ module.exports = {
   getAllcompanies,
   updateCompany,
   getCompanyById,
-  getAllCompaniesOnly
+  getAllCompaniesOnly,
 };
-

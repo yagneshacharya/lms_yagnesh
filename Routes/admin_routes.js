@@ -21,6 +21,6 @@ router.delete("/deleteCompany", deleteCompany);
 router.get("/getAllcompanies", getAllcompanies);
 router.get("/getAllCompaniesOnly", getAllCompaniesOnly);
 router.get("/getCompanyById", getCompanyById);
-router.put("/updateCompany", updateCompany);
+router.post("/updateCompany", updateCompany);
 
 module.exports = router;

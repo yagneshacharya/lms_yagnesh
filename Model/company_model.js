@@ -1,6 +1,10 @@
 const mongoose= require('mongoose');
-
+const {nanoid} = require('nanoid');
 let company_registration = mongoose.Schema({
+    _id : {
+      type : String,
+      default : ()=> nanoid(4)
+    }, 
     company_name: {
       type: String,
       required: true,
