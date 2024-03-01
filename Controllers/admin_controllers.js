@@ -109,14 +109,15 @@ const updateCompany = (req, res) => {
   if (req.body.isDeleted) {
     obj.company_isDeleted = req.body.isDeleted;
   }
-  console.log("backend message : ", obj);
+  console.log("backend message : ", obj,'\n',req.body._id);
 
   company_model
-    .updateOne({ _id: req.body._id }, obj)
+    .updateOne({ _id: req.body._id }, {...obj})
     .then((data) => { 
       res.send({
         isSuccess: true,
         message: "company has been updated",
+        response : data
       });
     })
     .catch((err) => {

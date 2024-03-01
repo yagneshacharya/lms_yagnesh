@@ -27,6 +27,6 @@ router.put("/addSkill", addSkill);
 router.get("/getAllSkills", getAllSkills);
 router.get("/getCandidateById", getCandidateById);
 router.post("/company_forgot_password", company_forgot_password);
-router.put("/updateCompany", updateCompany);
+router.post("/updateCompany", updateCompany);
 
 module.exports = router;
