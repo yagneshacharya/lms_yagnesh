@@ -74,7 +74,6 @@ const addCompany = (req, res) => {
       });
     })
     .catch((err) => {
-      console.log(err);
       res.send({
         isSuccess: false,
         message: "Something went wrong",
@@ -109,15 +108,14 @@ const updateCompany = (req, res) => {
   if (req.body.isDeleted) {
     obj.company_isDeleted = req.body.isDeleted;
   }
-  console.log("backend message : ", obj,'\n',req.body._id);
 
   company_model
-    .updateOne({ _id: req.body._id }, {...obj})
-    .then((data) => { 
+    .updateOne({ _id: req.body._id }, { ...obj })
+    .then((data) => {
       res.send({
         isSuccess: true,
         message: "company has been updated",
-        response : data
+        response: data,
       });
     })
     .catch((err) => {
@@ -129,31 +127,7 @@ const updateCompany = (req, res) => {
     });
 };
 
-// Deleting companies ___________________
 
-const deleteCompany = (req, res) => {
-  try {
-    company_model
-      .deleteOne({ company_name: req.query.name })
-      .then((data) => {
-        res.send({
-          isSuccess: true,
-          message: "Company has been deleted successfully",
-        });
-      })
-      .catch((err) => {
-        res.send({
-          isSuccess: false,
-          message: "Something went wrong while deletion",
-        });
-      });
-  } catch (error) {
-    res.send({
-      isSuccess: false,
-      data: error,
-    });
-  }
-};
 
 //@ Find all companies by name__________________
 
@@ -161,7 +135,7 @@ const getAllcompanies = (req, res) => {
   try {
     const names = req.query.names;
     company_model
-      .find({ company_name: new RegExp(names) })
+      .find({company_isDeleted : false})
       .then((data) => {
         res.send({
           isSuccess: true,
@@ -212,8 +186,34 @@ const getAllCompaniesOnly = (req, res) => {
   }
 };
 
-//@ Find  companies by id __________________
 
+// @Deleting companies __________________
+const deleteCompany = (req, res) => {
+  try {
+    company_model
+      .deleteOne({ _id: req.query.companyID})
+      .then((data) => {
+        res.send({
+          isSuccess: true,
+          message: "List of companies ",
+          response: data,
+        });
+      })
+      .catch((err) => {
+        res.send({
+          isSuccess: false,
+          message: "Companies not found",
+          error: err,
+        });
+      });
+  } catch (error) {
+    res.send({
+      isSuccess: false,
+      data: error,
+    });
+  }
+};
+//@ Find  companies by id __________________
 const getCompanyById = (req, res) => {
   try {
     const names = req.body.names;
