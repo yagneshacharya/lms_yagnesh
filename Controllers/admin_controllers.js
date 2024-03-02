@@ -112,9 +112,9 @@ const updateCompany = (req, res) => {
   company_model
     .updateOne({ _id: req.body._id }, { ...obj })
     .then((data) => {
+      console.log(req.headers.authorization.split(" ")[1]);
       res.send({
         isSuccess: true,
-        message: "company has been updated",
         response: data,
       });
     })

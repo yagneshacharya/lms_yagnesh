@@ -2,8 +2,8 @@ const jwt = require("jsonwebtoken");
 
 const admin_middlware = async (req, res, next) => {
   try {
-    let token = req.query.admin_token;
-    console.log("Token", token);
+    let token = req.headers.authorization.split(" ")[1];
+    console.log("Token from middlware", token);
     let auth = jwt.verify(token, process.env.KEY);
 
     console.log("auth", auth);
@@ -16,6 +16,7 @@ const admin_middlware = async (req, res, next) => {
       if (auth.role == "admin") {
         next();
       } else {
+        console.log("backend ", auth);
         res.send("You are not authorized");
       }
     }
@@ -26,6 +27,5 @@ const admin_middlware = async (req, res, next) => {
     });
   }
 };
-
 
 module.exports = { admin_middlware };

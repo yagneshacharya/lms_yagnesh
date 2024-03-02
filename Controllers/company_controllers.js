@@ -32,12 +32,12 @@ const company_login = (req, res) => {
             { company: data.company_email, role: "company" },
             process.env.KEY
           );
-          
+
           res.send({
             isSuccess: true,
             message: "Sucessfull loggin",
             company_token: token,
-            companyID : data._id
+            companyID: data._id,
           });
         }
       })
@@ -116,7 +116,7 @@ const updateCandidates = (req, res) => {
   }
 
   candidateSchema
-    .updateOne({ candidate_name: req.query.candidate_name }, obj)
+    .updateOne({ _id: req.body._id }, obj)
     .then(() => {
       res.send({
         isSuccess: true,
@@ -136,17 +136,19 @@ const updateCandidates = (req, res) => {
 
 const deleteCandidates = (req, res) => {
   candidateSchema
-    .deleteOne({ candidate_name: req.query.candidate_name })
+    .deleteOne({ _id: req.query.companyID })
     .then((data) => {
       res.send({
         isSuccess: true,
-        message: "Candidate has been deleted successfully",
+        message: "List of companies ",
+        response: data,
       });
     })
     .catch((err) => {
       res.send({
         isSuccess: false,
-        message: "Something went wrong while deletion",
+        message: "Companies not found",
+        error: err,
       });
     });
 };

@@ -16,11 +16,11 @@ const { admin_middlware } = require("../Middlewares/admin_middleware");
 
 router.post("/", createAdmin);
 router.post("/admin_login", admin_login);
-router.post("/addCompany", addCompany);
+router.post("/addCompany",admin_middlware ,addCompany);
 router.delete("/deleteCompany", deleteCompany);
 router.get("/getAllcompanies", getAllcompanies);
 router.get("/getAllCompaniesOnly", getAllCompaniesOnly);
 router.get("/getCompanyById", getCompanyById);
-router.post("/updateCompany", updateCompany);
+router.post("/updateCompany",admin_middlware,updateCompany);
 
 module.exports = router;

@@ -22,7 +22,7 @@ router.post("/company_login", company_login);
 router.post("/addCandidates", addCandidates);
 router.delete("/deleteCandidates", deleteCandidates);
 router.get("/getAllCandidates", getAllCandidates);
-router.put("/updateCandidates", updateCandidates);
+router.post("/updateCandidates", updateCandidates);
 router.put("/addSkill", addSkill);
 router.get("/getAllSkills", getAllSkills);
 router.get("/getCandidateById", getCandidateById);
