@@ -4,7 +4,7 @@ const SkillSchema = require("../Model/Skill_model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { transporter, mailOptions, sendMail } = require("../Nodemailer");
-const {updateCompany} = require('../Controllers/admin_controllers');
+const { updateCompany } = require("../Controllers/admin_controllers");
 
 //@ Company login _______________
 
@@ -32,11 +32,12 @@ const company_login = (req, res) => {
             { company: data.company_email, role: "company" },
             process.env.KEY
           );
-
+          
           res.send({
-            // sending token as a response
+            isSuccess: true,
             message: "Sucessfull loggin",
             company_token: token,
+            companyID : data._id
           });
         }
       })
@@ -65,7 +66,7 @@ const addCandidates = (req, res) => {
     candidate_contact_number: req.body.candidate_contact_number,
     candidate_address: req.body.candidate_address,
     candidate_profilePic: req.body.candidate_profilePic,
-    company_id: req.body.company_id,
+    company_id: req.body.companyID,
   });
 
   candidate
@@ -156,7 +157,9 @@ const getAllCandidates = (req, res) => {
   try {
     const company_id = req.query.company_id;
     candidateSchema
-      .find({ company_id: company_id })
+      .find({
+        $and: [{ company_id: company_id }, { candidate_isDeleted: false }],
+      })
       .then((data) => {
         res.send({
           isSuccess: true,
@@ -292,7 +295,7 @@ const company_update_password = async (req, res) => {
   const id = await req.body.id;
 
   let updated_obj = {
-    company_password: bcrypt.hashSync(new_password,10)
+    company_password: bcrypt.hashSync(new_password, 10),
   };
 
   await company_model
@@ -323,5 +326,5 @@ module.exports = {
   getCandidateById,
   company_forgot_password,
   company_update_password,
-  updateCompany
+  updateCompany,
 };

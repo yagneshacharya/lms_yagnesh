@@ -11,10 +11,10 @@ app.use(express.json())
 require('dotenv').config()
 require('./dbconfig')
 
-
+ 
 const adminRoutes = require('./Routes/admin_routes');
 const companyRoutes = require('./Routes/company_routes')
-
+  
 app.use('/admin', adminRoutes)
 app.use('/company', companyRoutes)
 
