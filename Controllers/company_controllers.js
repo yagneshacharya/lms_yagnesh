@@ -13,7 +13,7 @@ const company_login = (req, res) => {
     let company_email = req.body.company_email;
 
     company_model
-      .findOne({ company_email })
+      .findOne({ $and: [{ company_email }, { company_isDeleted: false }] })
       .then((data) => {
         let verifier = bcrypt.compareSync(
           req.body.company_password,
@@ -44,6 +44,7 @@ const company_login = (req, res) => {
       .catch((err) => {
         console.log("here is your err", err);
         res.send({
+          isSuccess : false,
           message: "company not found",
           error: err,
         });
@@ -88,7 +89,7 @@ const addCandidates = (req, res) => {
     });
 };
 
-// updating Candidates ___________________
+//@ updating Candidates ___________________
 
 const updateCandidates = (req, res) => {
   let obj = {};
@@ -121,6 +122,27 @@ const updateCandidates = (req, res) => {
       res.send({
         isSuccess: true,
         message: "candidate has been updated",
+      });
+    })
+    .catch((err) => {
+      res.send({
+        isSuccess: false,
+        message: "Something went wrong",
+        error: err,
+      });
+    });
+};
+//! updating all Candidates ___________________
+
+const deleteAllCandidates = (req, res) => {
+
+
+  candidateSchema
+    .updateMany({ _id: req.body._id }, {candidate_isDeleted : true})
+    .then(() => {
+      res.send({
+        isSuccess: true,
+        message: "candidates has been updated",
       });
     })
     .catch((err) => {
@@ -329,4 +351,5 @@ module.exports = {
   company_forgot_password,
   company_update_password,
   updateCompany,
+  deleteAllCandidates
 };
