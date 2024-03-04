@@ -11,15 +11,16 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const mailOptions = (mail_id)=>{
- return  {
-    from: '"yagnesha charya 👻" <yagneshacharya11@gmail.com>',
-    to: `${mail_id}`,
-    subject: "Hello nodemailer✔",
-    text: "Hello Nodemaler is perfectly working?",
-    html: "<b>You passed! the final testing</b>",
-  };  
-}
+const mailOptions = (mail_id) => {
+     let link = `http://localhost:3000/ForgetPassword/${mail_id}`
+     return  {
+       from: '"yagnesha charya 👻" <yagneshacharya11@gmail.com>',
+       to: `${mail_id}`,
+       subject: "Reset Your Password",
+       text: "Click the link below to reset your password:",
+       html: `<a href=${link}>Reset Password</a>`,
+     };  
+   }
 
 const sendMail = async (transporter, mailOptions) => {
   try {

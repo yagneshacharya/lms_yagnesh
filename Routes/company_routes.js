@@ -14,7 +14,8 @@ const {
   getCandidateById,
   company_forgot_password,
   updateCompany,
-  deleteAllCandidates
+  deleteAllCandidates,
+  company_update_password
 } = require("../Controllers/company_controllers");
 
 const {company_middleWare} = require('../Middlewares/company_middlewares');
@@ -28,8 +29,9 @@ router.put("/addSkill", addSkill);
 router.get("/getAllSkills", getAllSkills);
 router.get("/getCandidateById", getCandidateById);
 router.post("/company_forgot_password", company_forgot_password);
-router.post("/updateCompany", company_middleWare,updateCompany);
+router.post("/updateCompany",updateCompany);
 router.post("/deleteAllCandidates", company_middleWare,deleteAllCandidates);
+router.post("/company_update_password",company_update_password);
 
 module.exports = router;
 

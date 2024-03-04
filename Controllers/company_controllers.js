@@ -44,7 +44,7 @@ const company_login = (req, res) => {
       .catch((err) => {
         console.log("here is your err", err);
         res.send({
-          isSuccess : false,
+          isSuccess: false,
           message: "company not found",
           error: err,
         });
@@ -135,10 +135,8 @@ const updateCandidates = (req, res) => {
 //! updating all Candidates ___________________
 
 const deleteAllCandidates = (req, res) => {
-
-
   candidateSchema
-    .updateMany({ _id: req.body._id }, {candidate_isDeleted : true})
+    .updateMany({ _id: req.body._id }, { candidate_isDeleted: true })
     .then(() => {
       res.send({
         isSuccess: true,
@@ -316,14 +314,13 @@ const company_forgot_password = async (req, res) => {
 
 const company_update_password = async (req, res) => {
   const new_password = await req.body.company_new_password;
-  const id = await req.body.id;
 
   let updated_obj = {
     company_password: bcrypt.hashSync(new_password, 10),
   };
 
   await company_model
-    .updateOne({ company_id: id }, updated_obj)
+    .updateOne({ company_email: req.body.company_email }, updated_obj)
     .then(() => {
       res.send({
         isSuccess: true,
@@ -351,5 +348,5 @@ module.exports = {
   company_forgot_password,
   company_update_password,
   updateCompany,
-  deleteAllCandidates
+  deleteAllCandidates,
 };
