@@ -1,4 +1,7 @@
 const nodemailer = require("nodemailer");
+const fs = require('fs');
+
+const htmlEmail = fs.readFileSync('email_template.html', 'utf-8');
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -18,7 +21,8 @@ const mailOptions = (mail_id) => {
        to: `${mail_id}`,
        subject: "Reset Your Password",
        text: "Click the link below to reset your password:",
-       html: `<a href=${link}>Reset Password</a>`,
+      //  html: `<a href=${link}>Reset Password</a>`,
+      html : htmlEmail
      };  
    }
 
