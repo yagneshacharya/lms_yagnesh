@@ -13,9 +13,8 @@ const transporter = nodemailer.createTransport({
     pass: "qltbuwiwulnlioti", //@ go to google > security > app passwords and generate a new one
   },
 });
-
 const mailOptions = (mail_id) => {
-     let link = `http://localhost:3000/ForgetPassword/${mail_id}`
+     let link = `http://localhost:3000/PasswordReset/${mail_id}`
      return  {
        from: '"yagnesha charya 👻" <yagneshacharya11@gmail.com>',
        to: `${mail_id}`,
