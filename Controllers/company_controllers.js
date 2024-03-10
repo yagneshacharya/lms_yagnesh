@@ -314,17 +314,17 @@ const company_forgot_password = async (req, res) => {
 
 const company_update_password = async (req, res) => {
   const new_password = await req.body.company_new_password;
-
   let updated_obj = {
     company_password: bcrypt.hashSync(new_password, 10),
   };
-
   await company_model
     .updateOne({ company_email: req.body.company_email }, updated_obj)
-    .then(() => {
+    .then((data) => {
       res.send({
         isSuccess: true,
         message: "password has been changed sucessfully",
+        email: req.body.company_email,
+        pass: req.body.company_new_password
       });
     })
     .catch((err) => {

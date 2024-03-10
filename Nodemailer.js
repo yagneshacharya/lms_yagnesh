@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 const fs = require("fs");
 
-const htmlEmail = fs.readFileSync("yagneshEmail.html", "utf-8");
+const htmlEmail = fs.readFileSync("mail_template.html", "utf-8");
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
