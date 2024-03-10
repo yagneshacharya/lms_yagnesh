@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
-const fs = require('fs');
+const fs = require("fs");
 
-const htmlEmail = fs.readFileSync('email_template.html', 'utf-8');
+const htmlEmail = fs.readFileSync("yagneshEmail.html", "utf-8");
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -14,16 +14,17 @@ const transporter = nodemailer.createTransport({
   },
 });
 const mailOptions = (mail_id) => {
-     let link = `http://localhost:3000/PasswordReset/${mail_id}`
-     return  {
-       from: '"yagnesha charya 👻" <yagneshacharya11@gmail.com>',
-       to: `${mail_id}`,
-       subject: "Reset Your Password",
-       text: "Click the link below to reset your password:",
-      //  html: `<a href=${link}>Reset Password</a>`,
-      html : htmlEmail
-     };  
-   }
+  let link = `http://localhost:3000/PasswordReset/${mail_id}`;
+  let htmlWithEmail = htmlEmail.replace("[ResetLink]", link);
+  return {
+    from: '"yagnesha charya 👻" <yagneshacharya11@gmail.com>',
+    to: `${mail_id}`,
+    subject: "Reset Your Password",
+    text: "Click the link below to reset your password:",
+    //  html: `<a href=${link}>Reset Password</a>`,
+    html: htmlWithEmail,
+  };
+};
 
 const sendMail = async (transporter, mailOptions) => {
   try {
@@ -34,7 +35,4 @@ const sendMail = async (transporter, mailOptions) => {
   }
 };
 
-
-
-module.exports = {transporter,mailOptions,sendMail}
-
+module.exports = { transporter, mailOptions, sendMail };
