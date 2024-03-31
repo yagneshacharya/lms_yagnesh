@@ -239,51 +239,6 @@ const getCandidateById = (req, res) => {
   }
 };
 
-const addSkill = async (req, res) => {
-  try {
-    let { Skill_name, Skill_title, Skill_duration, company_id } = req.body;
-
-    let Skill = new SkillSchema({
-      Skill_name,
-      Skill_title,
-      Skill_duration,
-      company_id,
-    });
-
-    Skill.save()
-      .then((data) => {
-        res.send(data);
-      })
-      .catch((err) => {
-        res.send(err);
-      });
-  } catch (error) {
-    res.send({
-      isSuccess: false,
-      data: error,
-    });
-  }
-};
-
-const getAllSkills = (req, res) => {
-  try {
-    SkillSchema.find({ company_id: req.body.company_id })
-      .then((data) => {
-        res.send(data);
-      })
-      .catch((err) => {
-        res.send({
-          isSuccess: false,
-          data: err,
-        });
-      });
-  } catch (error) {
-    res.send({
-      isSuccess: false,
-      data: error,
-    });
-  }
-};
 
 const company_forgot_password = async (req, res) => {
   try {
@@ -342,8 +297,6 @@ module.exports = {
   deleteCandidates,
   getAllCandidates,
   updateCandidates,
-  addSkill,
-  getAllSkills,
   getCandidateById,
   company_forgot_password,
   company_update_password,

@@ -9,8 +9,6 @@ const {
   deleteCandidates,
   getAllCandidates,
   updateCandidates,
-  addSkill,
-  getAllSkills,
   getCandidateById,
   company_forgot_password,
   updateCompany,
@@ -25,8 +23,6 @@ router.post("/addCandidates",company_middleWare,addCandidates);
 router.delete("/deleteCandidates", deleteCandidates);
 router.get("/getAllCandidates", getAllCandidates);
 router.post("/updateCandidates", updateCandidates);
-router.put("/addSkill", addSkill);
-router.get("/getAllSkills", getAllSkills);
 router.get("/getCandidateById", getCandidateById);
 router.post("/company_forgot_password", company_forgot_password);
 router.post("/updateCompany",updateCompany);

@@ -5,11 +5,11 @@ let Skill_registration = mongoose.Schema({
   Skill_name: {
     type: String,
   },
-  Skill_title: {
+  Skill_Description: {
     type: String,
   },
-  Skill_duration: {
-    type: String,
+  Sub_skills:{
+    type : Array
   },
   Skill_isDeleted: {
     type: Boolean,
