@@ -20,7 +20,7 @@ let Skill_registration = mongoose.Schema({
     default: false,
   },
   company_id: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: "company_db",
     required: true,
   },

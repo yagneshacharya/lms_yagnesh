@@ -14,9 +14,11 @@ require('./dbconfig')
  
 const adminRoutes = require('./Routes/admin_routes');
 const companyRoutes = require('./Routes/company_routes')
+const skillRoutes = require('./Routes/skill_routes')
   
 app.use('/admin', adminRoutes)
 app.use('/company', companyRoutes)
+app.use('/company',skillRoutes)
 
 app.listen(process.env.PORT, () => {
      console.log(`Server has been started at ${process.env.PORT}`)

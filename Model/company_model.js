@@ -5,7 +5,7 @@ let company_registration = mongoose.Schema({
       type : String,
       default : ()=> nanoid(4)
     }, 
-    company_name: {
+    company_name: { 
       type: String,
       required: true,
     },
