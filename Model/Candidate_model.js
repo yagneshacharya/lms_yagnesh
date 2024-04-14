@@ -33,6 +33,10 @@ let candidate_registration = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  candidate_skills : {
+    type : Array,
+    ref : "Skill_Model"
+  },
   company_id: {
     type: String,
     ref: "company_db",
@@ -40,3 +44,5 @@ let candidate_registration = mongoose.Schema({
 });
 
 module.exports = mongoose.model("Candidate_Model", candidate_registration);
+
+

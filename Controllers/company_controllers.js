@@ -290,7 +290,32 @@ const company_update_password = async (req, res) => {
       });
     });
 };
-// $2b$10$Dtofun9MWPZUa29MYrCmjO1iHta7TQgtUkpuvRs288Uczn14xD2ky
+
+const assignSkill = (req,res)=>{
+  let obj = {};
+
+  if (req.body.candidate_id && req.body.candidate_skills) {
+    obj._id = req.body.candidate_id;
+    obj.candidate_skills = req.body.candidate_skills
+  }
+  
+  candidateSchema
+    .updateOne({ _id: obj._id }, obj)
+    .then(() => {
+      res.send({
+        isSuccess: true,
+        message: "candidate skills are updated",
+      });
+    })
+    .catch((err) => {
+      res.send({
+        isSuccess: false,
+        message: "Something went wrong while adding skills",
+        error: err,
+      });
+    });
+}
+
 module.exports = {
   company_login,
   addCandidates,
@@ -302,4 +327,5 @@ module.exports = {
   company_update_password,
   updateCompany,
   deleteAllCandidates,
+  assignSkill
 };

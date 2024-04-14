@@ -13,7 +13,8 @@ const {
   company_forgot_password,
   updateCompany,
   deleteAllCandidates,
-  company_update_password
+  company_update_password,
+  assignSkill
 } = require("../Controllers/company_controllers");
 
 const {company_middleWare} = require('../Middlewares/company_middlewares');
@@ -28,6 +29,7 @@ router.post("/company_forgot_password", company_forgot_password);
 router.post("/updateCompany",updateCompany);
 router.post("/deleteAllCandidates", company_middleWare,deleteAllCandidates);
 router.post("/company_update_password",company_update_password);
+router.post("/assignSkill",assignSkill);
 
 module.exports = router;
 

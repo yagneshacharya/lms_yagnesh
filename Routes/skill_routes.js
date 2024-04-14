@@ -8,8 +8,9 @@ const {addSkill,getAllSkills,deleteSkill,updateSkill} = require('../Controllers/
 
 router.post('/addSkill',addSkill)
 router.get('/getAllSkills',getAllSkills)
-router.put('/updateSkill',updateSkill)
+router.post('/updateSkill',updateSkill)
 router.delete('/deleteSkill',deleteSkill)
+
 
 
 
