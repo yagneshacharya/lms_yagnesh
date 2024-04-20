@@ -116,6 +116,33 @@ const updateSkill = (req, res) => {
     });
 };
 
+const responseFront = {
+  "data": {
+      "Skill_name": "karate",
+      "Skill_Description": "fight",
+      "Sub_skills": [
+          {
+              "kick": {
+                  "sub": [
+                      "sub kick",
+                      "sub kick 2"
+                  ]
+              },
+              "punch": {
+                  "sub": [
+                      "punch 1",
+                      "punch 2"
+                  ]
+              }
+          }
+      ],
+      "Skill_isDeleted": false,
+      "company_id": "lTrb",
+      "_id": "662381a585503ee5b387edc3",
+      "Skill_id": "r1scs",
+      "__v": 0
+  }
+}
 
 module.exports = { addSkill, getAllSkills, deleteSkill, updateSkill };
 

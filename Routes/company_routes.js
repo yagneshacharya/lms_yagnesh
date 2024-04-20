@@ -20,7 +20,7 @@ const {
 const {company_middleWare} = require('../Middlewares/company_middlewares');
 
 router.post("/company_login", company_login);
-router.post("/addCandidates",company_middleWare,addCandidates);
+router.post("/addCandidates",addCandidates);
 router.delete("/deleteCandidates", deleteCandidates);
 router.get("/getAllCandidates", getAllCandidates);
 router.post("/updateCandidates", updateCandidates);
@@ -32,5 +32,11 @@ router.post("/company_update_password",company_update_password);
 router.post("/assignSkill",assignSkill);
 
 module.exports = router;
+
+
+/////// http://localhost:3000/Company/assignSkill/     //Forassign skill
+/////// for getting all skill         `http://localhost:5001/company/getAllSkills?company_id=${companyID}`
+
+// during add skill-------- send candidate id and skills array thats it
 
 

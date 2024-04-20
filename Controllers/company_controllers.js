@@ -295,16 +295,15 @@ const assignSkill = (req,res)=>{
   let obj = {};
 
   if (req.body.candidate_id && req.body.candidate_skills) {
-    obj._id = req.body.candidate_id;
     obj.candidate_skills = req.body.candidate_skills
   }
   
   candidateSchema
-    .updateOne({ _id: obj._id }, obj)
+    .updateOne({ _id: req.body.candidate_id }, obj)
     .then(() => {
       res.send({
         isSuccess: true,
-        message: "candidate skills are updated",
+        message: "candidate skills are assigned or updated",
       });
     })
     .catch((err) => {
